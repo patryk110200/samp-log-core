@@ -34,9 +34,6 @@ endif()
 
 set(LOGCORE_LIBS_DIR "${PROJECT_SOURCE_DIR}/libs")
 
-add_subdirectory(libs/fmt)
-mark_as_advanced(FMT_TEST FMT_INSTALL FMT_PEDANTIC FMT_DOC FMT_USE_CPP11 FMT_WERROR)
-
 # -- CONAN
 include(cmake/conan.cmake)
 function(add_conan_lib pkg_name conan_pkg)
@@ -52,6 +49,8 @@ function(add_conan_lib pkg_name conan_pkg)
 	set_target_properties(${pkg_name} PROPERTIES IMPORTED_GLOBAL TRUE)
 endfunction()
 
-
+add_conan_lib(CONAN_PKG::fmt fmt/7.1.3)
 add_conan_lib(CONAN_PKG::yaml-cpp yaml-cpp/0.6.3)
+
+set(LOGCORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE INTERNAL "")
 add_subdirectory(src)

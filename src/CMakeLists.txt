@@ -109,7 +109,7 @@ endif()
 
 target_link_libraries(log-core PRIVATE
 	amx
-	fmt
+	CONAN_PKG::fmt
 	CONAN_PKG::yaml-cpp
 )
 
