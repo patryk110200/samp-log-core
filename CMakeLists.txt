@@ -12,8 +12,12 @@ set(CMAKE_CXX_STANDARD 11) #required for fmt library
 
 if (MSVC)
 	add_link_options(/INCREMENTAL:NO /NODEFAULTLIB:MSVCRT)
-	# link runtime statically
 	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+	SET(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /MT")
+	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+	SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /MT")
+	set(CMAKE_BUILD_TYPE "" CACHE STRING "" FORCE)
 elseif(UNIX)
 	# hide non-exported symbols
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
@@ -33,6 +37,21 @@ set(LOGCORE_LIBS_DIR "${PROJECT_SOURCE_DIR}/libs")
 add_subdirectory(libs/fmt)
 mark_as_advanced(FMT_TEST FMT_INSTALL FMT_PEDANTIC FMT_DOC FMT_USE_CPP11 FMT_WERROR)
 
-find_package(yaml-cpp REQUIRED CONFIG)
+# -- CONAN
+include(cmake/conan.cmake)
+function(add_conan_lib pkg_name conan_pkg)
+	conan_check(REQUIRED)
 
+	conan_cmake_run(
+		REQUIRES ${conan_pkg}
+		ARCH x86
+		BASIC_SETUP CMAKE_TARGETS
+		BUILD missing
+	)
+
+	set_target_properties(${pkg_name} PROPERTIES IMPORTED_GLOBAL TRUE)
+endfunction()
+
+
+add_conan_lib(CONAN_PKG::yaml-cpp yaml-cpp/0.6.3)
 add_subdirectory(src)

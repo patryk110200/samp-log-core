@@ -70,7 +70,6 @@ set_target_properties(log-core PROPERTIES OUTPUT_NAME "log-core2")
 
 target_include_directories(log-core PRIVATE 
 	${LOGCORE_LIBS_DIR}/tinydir
-	${YAML_CPP_INCLUDE_DIR}
 )
 
 target_compile_definitions(log-core PRIVATE IN_LOGCORE_PLUGIN)
@@ -111,7 +110,7 @@ endif()
 target_link_libraries(log-core PRIVATE
 	amx
 	fmt
-	yaml-cpp
+	CONAN_PKG::yaml-cpp
 )
 
 if(LOGCORE_INSTALL_DEV)
