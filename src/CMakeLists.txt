@@ -11,6 +11,11 @@ if(WIN32)
 else()
 	set(CRASHHANDLER_CPP crashhandler_unix.cpp)
 	set(FILECHANGEDETECTOR_CPP FileChangeDetectorLinux.cpp)
+	set(
+		ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/artifact/"
+		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/artifact/"
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/artifact/"
+	)
 endif()
 
 set(LOGCORE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include/samplog)
@@ -113,66 +118,18 @@ target_link_libraries(log-core PRIVATE
 	CONAN_PKG::yaml-cpp
 )
 
-if(LOGCORE_INSTALL_DEV)
-	set(INCLUDE_INSTALL_DIR include)
-	install(TARGETS log-core EXPORT log-core-targets
-		LIBRARY DESTINATION lib
-		ARCHIVE DESTINATION lib
-		RUNTIME DESTINATION bin
-		INCLUDES DESTINATION include
-	)
-	install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/" DESTINATION include)
-	
-	include(CMakePackageConfigHelpers)
-	write_basic_package_version_file(
-		"${CMAKE_CURRENT_BINARY_DIR}/log-core/log-coreConfigVersion.cmake"
-		VERSION ${LOGCORE_VERSION}
-		COMPATIBILITY SameMajorVersion
-	)
-
-	export(EXPORT log-core-targets
-		FILE "${CMAKE_CURRENT_BINARY_DIR}/log-core/log-coreTargets.cmake"
-	)
-	
-	configure_package_config_file(
-		${PROJECT_SOURCE_DIR}/cmake/log-coreConfig.cmake.in
-		${CMAKE_CURRENT_BINARY_DIR}/log-coreConfig.cmake
-		INSTALL_DESTINATION cmake
-		PATH_VARS INCLUDE_INSTALL_DIR
-	)
-
-	set(ConfigPackageLocation cmake)
-	install(EXPORT log-core-targets
-	  FILE
-		log-coreTargets.cmake
-	  DESTINATION
-		${ConfigPackageLocation}
-	)
-	install(
-	  FILES
-		${CMAKE_CURRENT_BINARY_DIR}/log-coreConfig.cmake
-		"${CMAKE_CURRENT_BINARY_DIR}/log-core/log-coreConfigVersion.cmake"
-	  DESTINATION
-		${ConfigPackageLocation}
-	  COMPONENT
-		Devel
-	)
-else()
-	install(TARGETS log-core 
-		RUNTIME DESTINATION "./"
-		LIBRARY DESTINATION "./")
+if(MSVC)
+set_target_properties(log-core
+    PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_BINARY_DIR}/artifact>
+	LIBRARY_OUTPUT_DIRECTORY  $<1:${CMAKE_BINARY_DIR}/artifact>
+)
+elseif(UNIX)
+message("binary dir:" ${CMAKE_BINARY_DIR})
+set_target_properties(log-core
+    PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifact
+	LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifact
+	ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifact
+)
 endif()
-
-if(LOGCORE_INSTALL_DEV)
-	set(CPACK_PACKAGE_NAME ${CMAKE_PROJECT_NAME})
-else()
-	set(CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}-runtime")
-endif()
-set(CPACK_PACKAGE_VERSION ${LOGCORE_VERSION})
-if(WIN32)
-	set(CPACK_GENERATOR ZIP)
-else()
-	set(CPACK_GENERATOR TGZ)
-endif()
-
-include(CPack)
