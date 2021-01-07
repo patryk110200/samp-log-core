@@ -2,7 +2,7 @@
 #include <vector>
 #include <functional>
 #include <fmt/format.h>
-#include <fmt/time.h>
+#include <fmt/chrono.h>
 #include <tinydir.h>
 
 #include "LogRotationManager.hpp"

@@ -11,12 +11,6 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/libs/cmake")
 set(CMAKE_CXX_STANDARD 11) #required for fmt library
 
 if (MSVC)
-	add_link_options(/INCREMENTAL:NO /NODEFAULTLIB:MSVCRT)
-	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-	SET(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /MT")
-	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-	SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /MT")
 	set(CMAKE_BUILD_TYPE "" CACHE STRING "" FORCE)
 elseif(UNIX)
 	# hide non-exported symbols
@@ -49,7 +43,10 @@ function(add_conan_lib pkg_name conan_pkg)
 	set_target_properties(${pkg_name} PROPERTIES IMPORTED_GLOBAL TRUE)
 endfunction()
 
-add_conan_lib(CONAN_PKG::fmt fmt/7.1.3)
+if(NOT DEFINED CONAN_HAS_FMT)
+	add_conan_lib(CONAN_PKG::fmt fmt/7.1.3)
+endif()
+
 add_conan_lib(CONAN_PKG::yaml-cpp yaml-cpp/0.6.3)
 
 set(LOGCORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE INTERNAL "")

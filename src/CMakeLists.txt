@@ -72,7 +72,7 @@ target_include_directories(log-core PRIVATE
 	${LOGCORE_LIBS_DIR}/tinydir
 )
 
-target_compile_definitions(log-core PRIVATE IN_LOGCORE_PLUGIN)
+target_compile_definitions(log-core PRIVATE IN_LOGCORE_PLUGIN FMT_HEADER_ONLY)
 if(MSVC)
 	target_compile_definitions(log-core PRIVATE
 		_CRT_SECURE_NO_WARNINGS
