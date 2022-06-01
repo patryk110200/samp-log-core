@@ -47,7 +47,7 @@ if(NOT DEFINED CONAN_HAS_FMT)
 	add_conan_lib(CONAN_PKG::fmt fmt/7.1.3)
 endif()
 
-add_conan_lib(CONAN_PKG::yaml-cpp yaml-cpp/0.6.3)
+add_conan_lib(CONAN_PKG::yaml-cpp yaml-cpp/0.7.0)
 
 set(LOGCORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE INTERNAL "")
 add_subdirectory(src)
