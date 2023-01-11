@@ -8,7 +8,7 @@
 #include <samplog/ILogger.hpp>
 #include "LogRotationManager.hpp"
 
-using samplog::LogLevel;
+using samplog::samplog_LogLevel;
 
 
 class Logger : public samplog::ILogger
@@ -18,7 +18,7 @@ public:
 
 	struct Config
 	{
-		LogLevel Level = LogLevel::ERROR | LogLevel::WARNING | LogLevel::FATAL;
+		samplog_LogLevel Level = samplog_LogLevel::ERROR | samplog_LogLevel::WARNING | samplog_LogLevel::FATAL;
 		bool PrintToConsole = false;
 		bool Append = true;
 		LogRotationConfig Rotation;
@@ -29,14 +29,14 @@ public:
 	~Logger();
 
 public: // interface implementation
-	bool IsLogLevel(LogLevel log_level) const override
+	bool IsLogLevel(samplog_LogLevel log_level) const override
 	{
 		return (_config.Level & log_level) == log_level;
 	}
 
-	bool Log(LogLevel level, std::string msg,
+	bool Log(samplog_LogLevel level, std::string msg,
 		std::vector<samplog::AmxFuncCallInfo> const &call_info) override;
-	bool Log(LogLevel level, std::string msg) override;
+	bool Log(samplog_LogLevel level, std::string msg) override;
 	bool LogNativeCall(AMX * const amx, cell * const params,
 		std::string name, std::string params_format) override;
 
@@ -58,9 +58,9 @@ private:
 	std::string FormatLogMessage(std::string message,
 		std::vector<samplog::AmxFuncCallInfo> call_info);
 
-	void WriteLogString(std::string const &time, LogLevel level,
+	void WriteLogString(std::string const &time, samplog_LogLevel level,
 		std::string const &message);
-	void PrintLogString(std::string const &time, LogLevel level,
+	void PrintLogString(std::string const &time, samplog_LogLevel level,
 		std::string const &message);
 
 private:

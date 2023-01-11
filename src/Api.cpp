@@ -61,7 +61,7 @@ extern "C" DLL_PUBLIC samplog::internal::IApi *samplog_GetApi(int version)
 		api = new Api;
 		break;
 	default:
-		LogManager::Get()->LogInternal(samplog::LogLevel::ERROR,
+		LogManager::Get()->LogInternal(samplog::samplog_LogLevel::ERROR,
 			fmt::format("unknown api version '{:d}'", version));
 		return nullptr;
 	}

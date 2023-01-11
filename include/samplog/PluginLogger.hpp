@@ -23,23 +23,23 @@ namespace samplog
 		Logger_t _logger;
 
 	public:
-		inline bool IsLogLevel(LogLevel log_level)
+		inline bool IsLogLevel(samplog_LogLevel log_level)
 		{
 			return _logger->IsLogLevel(log_level);
 		}
 
-		inline bool Log(LogLevel level, const char *msg)
+		inline bool Log(samplog_LogLevel level, const char *msg)
 		{
 			return _logger->Log(level, msg);
 		}
 
-		inline bool Log(LogLevel level, const char *msg,
+		inline bool Log(samplog_LogLevel level, const char *msg,
 			std::vector<AmxFuncCallInfo> const &call_info)
 		{
 			return _logger->Log(level, msg, call_info);
 		}
 
-		inline bool Log(AMX * const amx, const LogLevel level, const char *msg)
+		inline bool Log(AMX * const amx, const samplog_LogLevel level, const char *msg)
 		{
 			std::vector<AmxFuncCallInfo> call_info;
 			return Api::Get()->GetAmxFunctionCallTrace(amx, call_info)
@@ -52,12 +52,12 @@ namespace samplog
 			return _logger->LogNativeCall(amx, params, name, params_format);
 		}
 
-		inline bool operator()(LogLevel level, const char *msg)
+		inline bool operator()(samplog_LogLevel level, const char *msg)
 		{
 			return Log(level, msg);
 		}
 
-		inline bool operator()(AMX * const amx, const LogLevel level, const char *msg)
+		inline bool operator()(AMX * const amx, const samplog_LogLevel level, const char *msg)
 		{
 			return Log(amx, level, msg);
 		}

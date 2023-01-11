@@ -8,26 +8,26 @@
 
 #include "utils.hpp"
 
-using samplog::LogLevel;
+using samplog::samplog_LogLevel;
 
 
-const char *utils::GetLogLevelAsString(samplog::LogLevel level)
+const char *utils::Getsamplog_LogLevelAsString(samplog::samplog_LogLevel level)
 {
 	switch (level)
 	{
-	case LogLevel::DEBUG:
+	case samplog_LogLevel::DEBUG:
 		return "DEBUG";
-	case LogLevel::INFO:
+	case samplog_LogLevel::INFO:
 		return "INFO";
-	case LogLevel::WARNING:
+	case samplog_LogLevel::WARNING:
 		return "WARNING";
-	case LogLevel::ERROR:
+	case samplog_LogLevel::ERROR:
 		return "ERROR";
-	case LogLevel::FATAL:
+	case samplog_LogLevel::FATAL:
 		return "FATAL";
-	case LogLevel::VERBOSE:
+	case samplog_LogLevel::VERBOSE:
 		return "VERBOSE";
-	case LogLevel::NONE:
+	case samplog_LogLevel::NONE:
 	default:
 		// do nothing
 		break;
@@ -35,23 +35,23 @@ const char *utils::GetLogLevelAsString(samplog::LogLevel level)
 	return "<unknown>";
 }
 
-fmt::rgb utils::GetLogLevelColor(samplog::LogLevel level)
+fmt::rgb utils::Getsamplog_LogLevelColor(samplog::samplog_LogLevel level)
 {
 	switch (level)
 	{
-	case LogLevel::DEBUG:
+	case samplog_LogLevel::DEBUG:
 		return fmt::color::green;
-	case LogLevel::INFO:
+	case samplog_LogLevel::INFO:
 		return fmt::color::royal_blue;
-	case LogLevel::WARNING:
+	case samplog_LogLevel::WARNING:
 		return fmt::color::orange;
-	case LogLevel::ERROR:
+	case samplog_LogLevel::ERROR:
 		return fmt::color::red;
-	case LogLevel::FATAL:
+	case samplog_LogLevel::FATAL:
 		return fmt::color::red;
-	case LogLevel::VERBOSE:
+	case samplog_LogLevel::VERBOSE:
 		return fmt::color::white_smoke;
-	case LogLevel::NONE:
+	case samplog_LogLevel::NONE:
 	default:
 		// do nothing
 		break;

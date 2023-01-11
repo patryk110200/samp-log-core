@@ -33,10 +33,10 @@ public:
 	void Queue(Action_t &&action);
 
 	void WriteLevelLogString(std::string const &time,
-		samplog::LogLevel level, std::string const &module_name,
+		samplog::samplog_LogLevel level, std::string const &module_name,
 		std::string const &message);
 
-	inline void LogInternal(samplog::LogLevel level, std::string msg)
+	inline void LogInternal(samplog::samplog_LogLevel level, std::string msg)
 	{
 		_internalLogger.Log(level, std::move(msg));
 	}

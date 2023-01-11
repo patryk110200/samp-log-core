@@ -13,10 +13,10 @@
 #include <functional>
 
 
-using samplog::LogLevel;
+using samplog::samplog_LogLevel;
 
 
-struct LogLevelConfig
+struct samplog_LogLevelConfig
 {
 	bool PrintToConsole = false;
 };
@@ -43,7 +43,7 @@ private: // variables
 	std::mutex _configLock;
 	std::unordered_map<std::string, Logger::Config> _loggerConfigs;
 	std::unordered_map<std::string, ConfigUpdateEvent_t> _loggerConfigEvents;
-	std::map<LogLevel, LogLevelConfig> _levelConfigs;
+	std::map<samplog_LogLevel, samplog_LogLevelConfig> _levelConfigs;
 	GlobalConfig _globalConfig;
 	std::unique_ptr<FileChangeDetector> _fileWatcher;
 
@@ -77,7 +77,7 @@ public: // functions
 		_loggerConfigEvents.erase(logger->GetModuleName());
 	}
 
-	LogLevelConfig const &GetLogLevelConfig(LogLevel level)
+	samplog_LogLevelConfig const &Getsamplog_LogLevelConfig(samplog_LogLevel level)
 	{
 		std::lock_guard<std::mutex> lock(_configLock);
 		return _levelConfigs[level];

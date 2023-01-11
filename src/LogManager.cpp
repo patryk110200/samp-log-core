@@ -14,7 +14,7 @@
 #include <memory>
 #include <map>
 
-using samplog::LogLevel;
+using samplog::samplog_LogLevel;
 
 
 LogManager::LogManager() :
@@ -47,13 +47,13 @@ void LogManager::Queue(Action_t &&action)
 	_queueNotifier.notify_one();
 }
 
-void LogManager::WriteLevelLogString(std::string const &time, LogLevel level,
+void LogManager::WriteLevelLogString(std::string const &time, samplog_LogLevel level,
 	std::string const &module_name, std::string const &message)
 {
-	static const std::map<LogLevel, std::string> level_files{
-		{ LogLevel::WARNING, "warnings.log" },
-		{ LogLevel::ERROR, "errors.log" },
-		{ LogLevel::FATAL, "fatals.log" }
+	static const std::map<samplog_LogLevel, std::string> level_files{
+		{ samplog_LogLevel::WARNING, "warnings.log" },
+		{ samplog_LogLevel::ERROR, "errors.log" },
+		{ samplog_LogLevel::FATAL, "fatals.log" }
 	};
 
 	auto it = level_files.find(level);
@@ -61,9 +61,9 @@ void LogManager::WriteLevelLogString(std::string const &time, LogLevel level,
 	{
 		auto file_path = LogConfig::Get()->GetGlobalConfig().LogsRootFolder + it->second;
 		utils::EnsureFolders(file_path);
-		std::ofstream loglevel_file(file_path,
+		std::ofstream samplog_LogLevel_file(file_path,
 			std::ofstream::out | std::ofstream::app);
-		loglevel_file <<
+		samplog_LogLevel_file <<
 			"[" << time << "] " <<
 			"[" << module_name << "] " <<
 			message << '\n' << std::flush;

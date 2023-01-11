@@ -8,46 +8,46 @@
 
 static const std::string CONFIG_FILE_NAME = "log-config.yml";
 
-LogLevel GetAllLogLevel()
+samplog_LogLevel GetAllsamplog_LogLevel()
 {
-	return LogLevel::DEBUG | LogLevel::INFO | LogLevel::WARNING
-		| LogLevel::ERROR | LogLevel::FATAL | LogLevel::VERBOSE;
+	return samplog_LogLevel::DEBUG | samplog_LogLevel::INFO | samplog_LogLevel::WARNING
+		| samplog_LogLevel::ERROR | samplog_LogLevel::FATAL | samplog_LogLevel::VERBOSE;
 }
 
-bool ParseLogLevel(YAML::Node const &level_node, LogLevel &dest, std::string const &error_msg)
+bool Parsesamplog_LogLevel(YAML::Node const &level_node, samplog_LogLevel &dest, std::string const &error_msg)
 {
-	static const std::unordered_map<std::string, LogLevel> loglevel_str_map = {
-		{ "Debug",   LogLevel::DEBUG },
-		{ "Info",    LogLevel::INFO },
-		{ "Warning", LogLevel::WARNING },
-		{ "Error",   LogLevel::ERROR },
-		{ "Fatal",   LogLevel::FATAL },
-		{ "Verbose", LogLevel::VERBOSE },
-		{ "All",     GetAllLogLevel() },
-		{ "None",	 LogLevel::NONE }
+	static const std::unordered_map<std::string, samplog_LogLevel> samplog_LogLevel_str_map = {
+		{ "Debug",   samplog_LogLevel::DEBUG },
+		{ "Info",    samplog_LogLevel::INFO },
+		{ "Warning", samplog_LogLevel::WARNING },
+		{ "Error",   samplog_LogLevel::ERROR },
+		{ "Fatal",   samplog_LogLevel::FATAL },
+		{ "Verbose", samplog_LogLevel::VERBOSE },
+		{ "All",     GetAllsamplog_LogLevel() },
+		{ "None",	 samplog_LogLevel::NONE }
 	};
 
 	auto const &level_str = level_node.as<std::string>(std::string());
 	if (level_str.empty())
 	{
-		LogManager::Get()->LogInternal(LogLevel::WARNING,
+		LogManager::Get()->LogInternal(samplog_LogLevel::WARNING,
 			fmt::format("{}: invalid log level specified", error_msg));
 		return false;
 	}
 
-	auto const &it = loglevel_str_map.find(level_str);
-	if (it == loglevel_str_map.end())
+	auto const &it = samplog_LogLevel_str_map.find(level_str);
+	if (it == samplog_LogLevel_str_map.end())
 	{
-		LogManager::Get()->LogInternal(LogLevel::WARNING,
+		LogManager::Get()->LogInternal(samplog_LogLevel::WARNING,
 			fmt::format("{}: invalid log level '{}'", error_msg, level_str));
 		return false;
 	}
 
 	auto const &level = (*it).second;
-	if (level != LogLevel::NONE)
+	if (level != samplog_LogLevel::NONE)
 		dest |= level;
 	else
-		dest = LogLevel::NONE;
+		dest = samplog_LogLevel::NONE;
 	return true;
 }
 
@@ -98,7 +98,7 @@ bool ParseFileSize(std::string const &size, unsigned int &dest_in_kb)
 Logger::Config GetInternalLogConfig()
 {
 	Logger::Config config;
-	config.Level = GetAllLogLevel();
+	config.Level = GetAllsamplog_LogLevel();
 	config.PrintToConsole = true;
 	return config;
 }
@@ -168,7 +168,7 @@ void LogConfig::ParseConfigFile()
 	}
 	catch (const YAML::ParserException& e)
 	{
-		LogManager::Get()->LogInternal(LogLevel::ERROR,
+		LogManager::Get()->LogInternal(samplog_LogLevel::ERROR,
 			fmt::format("could not parse log config file: {}", e.what()));
 		return;
 	}
@@ -191,29 +191,29 @@ void LogConfig::ParseConfigFile()
 		auto module_name = y_it->first.as<std::string>(std::string());
 		if (module_name.empty() || module_name == "log-core")
 		{
-			LogManager::Get()->LogInternal(LogLevel::ERROR,
+			LogManager::Get()->LogInternal(samplog_LogLevel::ERROR,
 				fmt::format("could not parse logger config: invalid logger name"));
 			continue;
 		}
 		Logger::Config config;
 
-		std::string const error_msg_loglevel = fmt::format(
+		std::string const error_msg_samplog_LogLevel = fmt::format(
 			"could not parse log level setting for logger '{}'", module_name);
 		YAML::Node const &log_levels = y_it->second["LogLevel"];
 		if (log_levels && !log_levels.IsNull()) // log level is specified, remove default log level
-			config.Level = LogLevel::NONE;
+			config.Level = samplog_LogLevel::NONE;
 
 		if (log_levels.IsSequence())
 		{
 			for (YAML::const_iterator y_it_level = log_levels.begin();
 				y_it_level != log_levels.end(); ++y_it_level)
 			{
-				ParseLogLevel(*y_it_level, config.Level, error_msg_loglevel);
+				Parsesamplog_LogLevel(*y_it_level, config.Level, error_msg_samplog_LogLevel);
 			}
 		}
 		else
 		{
-			ParseLogLevel(log_levels, config.Level, error_msg_loglevel);
+			Parsesamplog_LogLevel(log_levels, config.Level, error_msg_samplog_LogLevel);
 		}
 
 		YAML::Node const &log_rotation = y_it->second["LogRotation"];
@@ -242,7 +242,7 @@ void LogConfig::ParseConfigFile()
 						if (!ParseDuration(time_str, config.Rotation.Value.Date))
 						{
 							config.Rotation.Value.Date = LogRotationTimeType::DAILY;
-							LogManager::Get()->LogInternal(LogLevel::WARNING,
+							LogManager::Get()->LogInternal(samplog_LogLevel::WARNING,
 								fmt::format(
 									"could not parse date log rotation duration " \
 									"for logger '{}': invalid duration \"{}\"",
@@ -255,7 +255,7 @@ void LogConfig::ParseConfigFile()
 						if (!ParseFileSize(size_str, config.Rotation.Value.FileSize))
 						{
 							config.Rotation.Value.FileSize = 100000; // 100MB
-							LogManager::Get()->LogInternal(LogLevel::WARNING,
+							LogManager::Get()->LogInternal(samplog_LogLevel::WARNING,
 								fmt::format(
 									"could not parse file log rotation size " \
 									"for logger '{}': invalid size \"{}\"",
@@ -274,7 +274,7 @@ void LogConfig::ParseConfigFile()
 				}
 				else
 				{
-					LogManager::Get()->LogInternal(LogLevel::WARNING,
+					LogManager::Get()->LogInternal(samplog_LogLevel::WARNING,
 						fmt::format(
 							"could not parse log rotation setting for logger '{}': " \
 							"invalid log rotation type '{}'",
@@ -283,7 +283,7 @@ void LogConfig::ParseConfigFile()
 			}
 			else
 			{
-				LogManager::Get()->LogInternal(LogLevel::WARNING,
+				LogManager::Get()->LogInternal(samplog_LogLevel::WARNING,
 					fmt::format(
 						"could not parse log rotation setting for logger '{}': " \
 						"log rotation not completely specified",
@@ -306,11 +306,11 @@ void LogConfig::ParseConfigFile()
 	YAML::Node const &levels = root["LogLevel"];
 	for (YAML::const_iterator y_it = levels.begin(); y_it != levels.end(); ++y_it)
 	{
-		LogLevel level = static_cast<LogLevel>(0); // initialize to zero as ParseLogLevel OR's levels
-		if (!ParseLogLevel(y_it->first, level, "could not parse log level setting"))
+		samplog_LogLevel level = static_cast<samplog_LogLevel>(0); // initialize to zero as Parsesamplog_LogLevel OR's levels
+		if (!Parsesamplog_LogLevel(y_it->first, level, "could not parse log level setting"))
 			continue;
 
-		LogLevelConfig config;
+		samplog_LogLevelConfig config;
 		YAML::Node const &console_print_opt = y_it->second["PrintToConsole"];
 		if (console_print_opt && console_print_opt.IsScalar())
 			config.PrintToConsole = console_print_opt.as<bool>(config.PrintToConsole);
@@ -330,7 +330,7 @@ void LogConfig::ParseConfigFile()
 		}
 		else
 		{
-			LogManager::Get()->LogInternal(LogLevel::WARNING, fmt::format(
+			LogManager::Get()->LogInternal(samplog_LogLevel::WARNING, fmt::format(
 				"could not parse log time format: '{:s}' " \
 				"is not a valid time format string", time_format));
 		}
@@ -356,10 +356,10 @@ void LogConfig::Initialize()
 	ParseConfigFile();
 	_fileWatcher.reset(new FileChangeDetector(CONFIG_FILE_NAME, [this]()
 	{
-		LogManager::Get()->LogInternal(LogLevel::INFO,
+		LogManager::Get()->LogInternal(samplog_LogLevel::INFO,
 			"config file change detected, reloading...");
 		ParseConfigFile();
-		LogManager::Get()->LogInternal(LogLevel::INFO,
+		LogManager::Get()->LogInternal(samplog_LogLevel::INFO,
 			"reloading finished");
 	}));
 }

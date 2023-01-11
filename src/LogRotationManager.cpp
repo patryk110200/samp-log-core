@@ -184,7 +184,7 @@ void LogRotationManager::CheckSizeRotation(std::string const &file_path,
 
 	if (size == -1)
 	{
-		LogManager::Get()->LogInternal(samplog::LogLevel::ERROR,
+		LogManager::Get()->LogInternal(samplog::samplog_LogLevel::ERROR,
 			fmt::format("log rotation: invalid size for file \"{:s}\"", file_path));
 		return;
 	}

@@ -7,7 +7,7 @@
 
 namespace samplog
 {
-	enum LogLevel
+	enum samplog_LogLevel
 	{
 		NONE = 0,
 		DEBUG = 1,
@@ -18,11 +18,11 @@ namespace samplog
 		VERBOSE = 32
 	};
 
-	inline LogLevel operator|(LogLevel a, LogLevel b)
+	inline samplog_LogLevel operator|(samplog_LogLevel a, samplog_LogLevel b)
 	{
-		return static_cast<LogLevel>(static_cast<int>(a) | static_cast<int>(b));
+		return static_cast<samplog_LogLevel>(static_cast<int>(a) | static_cast<int>(b));
 	}
-	inline LogLevel &operator|=(LogLevel &in, LogLevel val)
+	inline samplog_LogLevel &operator|=(samplog_LogLevel &in, samplog_LogLevel val)
 	{
 		return in = in | val;
 	}

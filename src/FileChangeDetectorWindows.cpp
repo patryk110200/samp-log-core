@@ -17,7 +17,7 @@ void FileChangeDetector::EventLoop(std::string const file_path)
 
 	if (GetFullPathName(file_path.c_str(), sizeof(full_path), full_path, &filename) == 0)
 	{
-		LogManager::Get()->LogInternal(samplog::LogLevel::ERROR, fmt::format(
+		LogManager::Get()->LogInternal(samplog::samplog_LogLevel::ERROR, fmt::format(
 			"file change detector: can't resolve file path \"{:s}\": {:d}",
 			file_path, GetLastError()));
 		return;
@@ -33,7 +33,7 @@ void FileChangeDetector::EventLoop(std::string const file_path)
 
 	if (dir_handle == INVALID_HANDLE_VALUE || dir_handle == nullptr)
 	{
-		LogManager::Get()->LogInternal(samplog::LogLevel::ERROR, fmt::format(
+		LogManager::Get()->LogInternal(samplog::samplog_LogLevel::ERROR, fmt::format(
 			"file change detector: can't open folder \"{:s}\": {:d}",
 			full_directory_path, GetLastError()));
 		return;
@@ -54,7 +54,7 @@ void FileChangeDetector::EventLoop(std::string const file_path)
 
 		if (result == 0)
 		{
-			LogManager::Get()->LogInternal(samplog::LogLevel::ERROR, fmt::format(
+			LogManager::Get()->LogInternal(samplog::samplog_LogLevel::ERROR, fmt::format(
 				"file change detector: can't queue read change operation: {:d}",
 				GetLastError()));
 			return;
@@ -80,7 +80,7 @@ void FileChangeDetector::EventLoop(std::string const file_path)
 			}
 			else // error
 			{
-				LogManager::Get()->LogInternal(samplog::LogLevel::ERROR, fmt::format(
+				LogManager::Get()->LogInternal(samplog::samplog_LogLevel::ERROR, fmt::format(
 					"file change detector: error while waiting on overlapped I/O event: {:d}",
 					GetLastError()));
 				return;
@@ -131,7 +131,7 @@ void FileChangeDetector::EventLoop(std::string const file_path)
 				// we only care if the file is still valid and has the name that we want
 				break;
 			default:
-				LogManager::Get()->LogInternal(samplog::LogLevel::WARNING, fmt::format(
+				LogManager::Get()->LogInternal(samplog::samplog_LogLevel::WARNING, fmt::format(
 					"file change detector: unknown file action '{:d}'", notify_info->Action));
 				break;
 			}

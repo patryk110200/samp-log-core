@@ -38,7 +38,7 @@ Logger::~Logger()
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
-bool Logger::Log(LogLevel level, std::string msg,
+bool Logger::Log(samplog_LogLevel level, std::string msg,
 	std::vector<samplog::AmxFuncCallInfo> const &call_info)
 {
 	if (!IsLogLevel(level))
@@ -54,7 +54,7 @@ bool Logger::Log(LogLevel level, std::string msg,
 		WriteLogString(time_str, level, log_msg);
 		LogManager::Get()->WriteLevelLogString(time_str, level, GetModuleName(), msg);
 
-		auto const &level_config = LogConfig::Get()->GetLogLevelConfig(level);
+		auto const &level_config = LogConfig::Get()->Getsamplog_LogLevelConfig(level);
 		if (_config.PrintToConsole || level_config.PrintToConsole)
 			PrintLogString(time_str, level, log_msg);
 
@@ -65,7 +65,7 @@ bool Logger::Log(LogLevel level, std::string msg,
 	return true;
 }
 
-bool Logger::Log(LogLevel level, std::string msg)
+bool Logger::Log(samplog_LogLevel level, std::string msg)
 {
 	static const std::vector<samplog::AmxFuncCallInfo> empty_call_info;
 	return Log(level, std::move(msg), empty_call_info);
@@ -83,7 +83,7 @@ bool Logger::LogNativeCall(AMX * const amx, cell * const params,
 	if (name.empty())
 		return false;
 
-	if (!IsLogLevel(LogLevel::DEBUG))
+	if (!IsLogLevel(samplog_LogLevel::DEBUG))
 		return false;
 
 
@@ -137,7 +137,7 @@ bool Logger::LogNativeCall(AMX * const amx, cell * const params,
 	std::vector<samplog::AmxFuncCallInfo> call_info;
 	AmxDebugManager::Get()->GetFunctionCallTrace(amx, call_info);
 
-	return Log(LogLevel::DEBUG, fmt::to_string(fmt_msg), call_info);
+	return Log(samplog_LogLevel::DEBUG, fmt::to_string(fmt_msg), call_info);
 }
 
 void Logger::OnConfigUpdate(Logger::Config const &config)
@@ -177,20 +177,20 @@ std::string Logger::FormatLogMessage(std::string message,
 	return fmt::to_string(log_string_buf);
 }
 
-void Logger::WriteLogString(std::string const &time, LogLevel level, std::string const &message)
+void Logger::WriteLogString(std::string const &time, samplog_LogLevel level, std::string const &message)
 {
 	utils::EnsureFolders(_logFilePath);
 	std::ofstream logfile(_logFilePath,
 		std::ofstream::out | std::ofstream::app);
 	logfile <<
 		"[" << time << "] " <<
-		"[" << utils::GetLogLevelAsString(level) << "] " <<
+		"[" << utils::Getsamplog_LogLevelAsString(level) << "] " <<
 		message << '\n' << std::flush;
 }
 
-void Logger::PrintLogString(std::string const &time, LogLevel level, std::string const &message)
+void Logger::PrintLogString(std::string const &time, samplog_LogLevel level, std::string const &message)
 {
-	auto *loglevel_str = utils::GetLogLevelAsString(level);
+	auto *samplog_LogLevel_str = utils::Getsamplog_LogLevelAsString(level);
 	if (LogConfig::Get()->GetGlobalConfig().EnableColors)
 	{
 		utils::EnsureTerminalColorSupport();
@@ -200,16 +200,16 @@ void Logger::PrintLogString(std::string const &time, LogLevel level, std::string
 		fmt::print("] [");
 		fmt::print(fmt::fg(fmt::color::sandy_brown), GetModuleName());
 		fmt::print("] [");
-		auto loglevel_color = utils::GetLogLevelColor(level);
-		if (level == LogLevel::FATAL)
-			fmt::print(fmt::fg(fmt::color::white) | fmt::bg(loglevel_color), loglevel_str);
+		auto samplog_LogLevel_color = utils::Getsamplog_LogLevelColor(level);
+		if (level == samplog_LogLevel::FATAL)
+			fmt::print(fmt::fg(fmt::color::white) | fmt::bg(samplog_LogLevel_color), samplog_LogLevel_str);
 		else
-			fmt::print(fmt::fg(loglevel_color), loglevel_str);
+			fmt::print(fmt::fg(samplog_LogLevel_color), samplog_LogLevel_str);
 		fmt::print("] {:s}\n", message);
 	}
 	else
 	{
 		fmt::print("[{:s}] [{:s}] [{:s}] {:s}\n",
-			time, GetModuleName(), loglevel_str, message);
+			time, GetModuleName(), samplog_LogLevel_str, message);
 	}
 }

@@ -29,7 +29,7 @@
 #endif
 
 
-using samplog::LogLevel;
+using samplog::samplog_LogLevel;
 
 
 namespace
@@ -83,8 +83,8 @@ namespace
 			"caught signal {:d} ({:s}) (errno: {}, signal code: {}, exit status: {})",
 			signal_number, Signals.at(signal_number), info->si_errno, info->si_code, info->si_status);
 
-		LogManager::Get()->LogInternal(LogLevel::INFO, err_msg);
-		LogManager::Get()->LogInternal(LogLevel::INFO,
+		LogManager::Get()->LogInternal(samplog_LogLevel::INFO, err_msg);
+		LogManager::Get()->LogInternal(samplog_LogLevel::INFO,
 			"log-core has detected a server crash and will now safely shut itself down");
 		LogManager::Get()->Destroy();
 

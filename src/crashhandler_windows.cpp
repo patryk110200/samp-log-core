@@ -9,7 +9,7 @@
 #include "crashhandler.hpp"
 #include "LogManager.hpp"
 
-using samplog::LogLevel;
+using samplog::samplog_LogLevel;
 
 
 namespace
@@ -58,8 +58,8 @@ namespace
 			"caught exception {:#X} ({:s}) from {:s}",
 			fatal_signal, signal_str, handler ? handler : "invalid");
 
-		LogManager::Get()->LogInternal(LogLevel::INFO, err_msg);
-		LogManager::Get()->LogInternal(LogLevel::INFO,
+		LogManager::Get()->LogInternal(samplog_LogLevel::INFO, err_msg);
+		LogManager::Get()->LogInternal(samplog_LogLevel::INFO,
 			"log-core has detected a server crash and will now safely shut itself down");
 		LogManager::Get()->Destroy();
 
@@ -86,8 +86,8 @@ namespace
 	{
 		if (dwCtrlType == CTRL_CLOSE_EVENT)
 		{
-			LogManager::Get()->LogInternal(LogLevel::INFO, "received Windows console close event");
-			LogManager::Get()->LogInternal(LogLevel::INFO, "log-core will now safely shut itself down");
+			LogManager::Get()->LogInternal(samplog_LogLevel::INFO, "received Windows console close event");
+			LogManager::Get()->LogInternal(samplog_LogLevel::INFO, "log-core will now safely shut itself down");
 			LogManager::Get()->Destroy();
 		}
 		return FALSE; //let other handlers have a chance to clean stuff up
